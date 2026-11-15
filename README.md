@@ -9,7 +9,10 @@
   <img alt="tests" src="https://img.shields.io/badge/selftest-2206%20passed-6ee7a8">
   <img alt="platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-9aa7b4">
   <img alt="version" src="https://img.shields.io/badge/version-1.0.0-ffffff">
+  <a href="https://github.com/dickyy0321/minebots/releases/latest"><img alt="download" src="https://img.shields.io/badge/download-Windows%20EXE-3b82f6"></a>
 </p>
+
+**下载 / Download** → [`MineBots-1.0.0-setup.exe`](https://github.com/dickyy0321/minebots/releases/latest)（安装版，推荐） · [`MineBots-1.0.0-portable.exe`](https://github.com/dickyy0321/minebots/releases/latest)（便携版，免安装）。未签名，SmartScreen 会拦一下 —— 点「更多信息 → 仍要运行」。
 
 MineBots 不是按键精灵，也不是预设动作的假人。它是一个**完整的机器人运行时**：自然语言进，动作队列出，中间有意图解析、寻路、建造、红石、模组理解，外面还有一个能同时管十只 Bot 的桌面端。
 
