@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'" />
+  <title>MineBots · 设置 / Settings</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="glass-bg"></div>
+
+  <!-- 全屏设置页 / Full-screen settings：左上返回主界面，左侧导航 + 右侧内容区。 -->
+  <div class="settings-app">
+    <header class="settings-head">
+      <button id="backToMainBtn" class="btn small" data-nav-target="index.html">← 返回主界面 / Back to main</button>
+      <h1 data-i18n="settingsTitle">设置 / Settings</h1>
+      <span id="settingsHeadHint" class="cmd-hint" data-i18n="settingsHeadHint">低频配置都在这里，改动即时生效 | Low-frequency options, applied live</span>
+    </header>
+
+    <div class="settings-body">
+      <nav id="settingsNav" class="settings-nav" aria-label="settings navigation">
+        <button class="settings-nav-btn active" data-settings-nav="ai" type="button">AI 配置 / AI</button>
+        <button class="settings-nav-btn" data-settings-nav="state" type="button">状态机与遥测 / State</button>
+        <button class="settings-nav-btn" data-settings-nav="action" type="button">动作与驾驶 / Actions</button>
+        <button class="settings-nav-btn" data-settings-nav="engine" type="button">底层引擎与日志 / Engine</button>
+        <button class="settings-nav-btn" data-settings-nav="channel" type="button">聊天频道 / Channels</button>
+        <button class="settings-nav-btn" data-settings-nav="model" type="button">模型档案池 / Models</button>
+        <button class="settings-nav-btn" data-settings-nav="roster" type="button">Bot 仓库 / Roster</button>
+        <div class="settings-nav-foot cmd-hint" data-i18n="settingsNavFoot">左侧导航切换分组，右侧内容独立滚动 | Pick a group, scroll the content on the right</div>
+      </nav>
+
+      <main id="settingsContent" class="settings-content">
+        <section class="settings-pane" data-settings-pane="ai">
+      <h3 data-i18n="aiConfig">AI 配置</h3>
+      <div class="row">
+        <label data-i18n="aiProvider">运行模式</label>
+        <select id="aiProviderSelect" class="cmd-select engine-select">
+          <option value="cloud" data-i18n="aiProviderCloud" selected>云端 API / Cloud</option>
+          <option value="local" data-i18n="aiProviderLocal">本地模型 / Local</option>
+        </select>
+      </div>
+      <div id="aiProviderHint" class="cmd-hint" data-i18n="aiProviderHintLocal">本地模型：不联网、不花钱 / Local model: offline &amp; free</div>
+      <div id="aiLocalGroup" style="display:none">
+        <h3 data-i18n="localConfigTitle">本地配置 / Local runtime</h3>
+        <div id="localTabs" class="local-tabs"></div>
+        <div class="ctx-actions">
+          <button id="localNewBtn" class="btn small">＋ 新建标签 / New tab</button>
+          <button id="localRemoveBtn" class="btn small">删除此标签 / Remove tab</button>
+        </div>
+        <div class="row"><label>标签名 / Label</label><input id="localLabelInput" class="input" placeholder="例：Ollama 快模型 / e.g. Ollama fast" /></div>
+        <div class="row">
+          <label data-i18n="localFramework">框架 / Framework</label>
+          <select id="aiEngineSelect" class="cmd-select engine-select">
+            <option value="ollama" data-i18n="engineOllama">Ollama (11434)</option>
+            <option value="lmstudio" data-i18n="engineLmstudio">LM Studio (1234)</option>
+            <option value="llamacpp" data-i18n="engineLlamacpp">llama.cpp (8080)</option>
+            <option value="sglang">SGLang (30000)</option>
+            <option value="custom" data-i18n="engineCustom">自定义 / Custom</option>
+          </select>
+        </div>
+        <div id="aiEngineHint" class="engine-hint" data-i18n="aiEngineHintLlama">运行 llama.cpp：llama-server -m 模型.gguf --port 8080；每个框架都能单独设端口、模型与程序路径，可探测 / 启动 / 停止 / 查状态。</div>
+        <div class="row"><label>端口 / Port</label><input id="localPortInput" class="input" placeholder="11434" /></div>
+        <div class="row"><label>启动模型 / Launch model</label><input id="localModelInput" class="input" placeholder="phi / Qwen2.5-7B / 模型路径" /></div>
+        <div class="row"><label>程序路径 / Exe</label><input id="localExeInput" class="input" placeholder="留空自动探测 / auto detect" /></div>
+        <div class="row"><label>启动参数 / Args</label><input id="localArgsInput" class="input" placeholder="可选，自定义框架用 / optional" /></div>
+        <div class="row"><label>temperature</label><input id="localTempInput" class="input" type="number" min="0" max="2" step="0.1" placeholder="0.7" /></div>
+        <div class="row"><label>top_p</label><input id="localTopPInput" class="input" type="number" min="0" max="1" step="0.05" placeholder="0.9" /></div>
+        <div class="row"><label>max_tokens</label><input id="localMaxTokensInput" class="input" type="number" min="1" max="65536" step="1" placeholder="256" /></div>
+        <div class="ctx-actions">
+          <button id="localDetectBtn" class="btn small">探测路径 / Detect</button>
+          <button id="localSaveBtn" class="btn small">保存配置 / Save</button>
+          <button id="localStatusBtn" class="btn small">检测状态 / Status</button>
+          <button id="localStartBtn" class="btn primary small">启动 / Start</button>
+          <button id="localStopBtn" class="btn small">停止 / Stop</button>
+        </div>
+        <div id="localStatusText" class="cmd-hint">未检测，点「检测状态」/ not probed</div>
+        <select id="localModelSelect" class="cmd-select"></select>
+        <div class="cmd-input-row">
+          <input id="localImportInput" class="cmd-input" placeholder="导入模型名 / import model（如 Qwen/Qwen3-8B）" />
+          <button id="localImportBtn" class="btn primary small">导入模型 / Import</button>
+          <button id="localUseModelBtn" class="btn small">设为当前模型 / Use</button>
+        </div>
+      </div>
+      <div id="aiCloudGroup">
+        <div class="row">
+          <label data-i18n="aiCloudPreset">云端预设</label>
+          <select id="aiCloudPreset" class="cmd-select engine-select">
+            <option value="" data-i18n="aiCloudCustom">自定义 / Custom</option>
+            <option value="deepseek">DeepSeek</option>
+            <option value="openai">OpenAI</option>
+            <option value="moonshot">Moonshot (Kimi)</option>
+            <option value="siliconflow">SiliconFlow 硅基流动</option>
+          </select>
+        </div>
+        <div id="aiCloudHint" class="engine-hint" data-i18n="aiCloudHint">云端按 token 计费，地址只填到 /v1 即可 / Cloud bills per token, base URL ends at /v1</div>
+      </div>
+      <div class="row"><label data-i18n="aiBaseUrl">API 地址</label><input id="aiBaseUrl" class="input" placeholder="http://127.0.0.1:11434/v1" /></div>
+      <div id="aiEndpointPreview" class="engine-hint"></div>
+      <div class="row">
+        <label data-i18n="aiBotTarget">作用对象</label>
+        <select id="aiBotSelect" class="cmd-select"></select>
+      </div>
+      <div id="aiBotHint" class="cmd-hint" data-i18n="aiBotHint">选「全局」改默认配置，选具体 bot 只改它自己的配置</div>
+      <div class="row"><label data-i18n="aiApiKey">API Key</label><input id="aiApiKey" class="input" /></div>
+      <div class="row"><label data-i18n="aiModel">模型</label><input id="aiModel" class="input" placeholder="phi" /></div>
+      <div class="ctx-actions">
+        <button id="aiTestBtn" class="btn small" data-i18n="aiTest">测试连接</button>
+        <span id="aiTestResult" class="cmd-hint"></span>
+      </div>
+      <div class="cmd-hint" data-i18n="aiHint">兼容 OpenAI 接口</div>
+
+      <h3 data-i18n="modelLibraryTitle">模型库 / Model library</h3>
+      <div id="modelLibraryHint" class="cmd-hint" data-i18n="modelLibraryHint">当前框架的模型都在这：检测 / 导入 / 选为启动模型；每个框架各自独立。</div>
+      <div class="ctx-actions">
+        <button id="ollamaStatusBtn" class="btn small" data-i18n="refresh">刷新</button>
+        <button id="ollamaOpenPageBtn" class="btn small" data-i18n="ollamaDownloadPage">官网下载</button>
+      </div>
+      <select id="ollamaModelSelect" class="cmd-select"></select>
+      <div class="cmd-input-row">
+        <input id="ollamaModelInput" class="cmd-input" data-i18n-ph="ollamaModelPh" />
+        <button id="ollamaPullBtn" class="btn primary small" data-i18n="ollamaPull">拉取</button>
+        <button id="ollamaRemoveBtn" class="btn small" data-i18n="remove">删除</button>
+      </div>
+      <div id="ollamaStatus" class="cmd-hint"></div>
+
+      <h3 data-i18n="npmTitle">npm 插件</h3>
+      <div class="cmd-input-row">
+        <input id="npmPackageInput" class="cmd-input" data-i18n-ph="npmPackagePh" />
+        <button id="npmInstallBtn" class="btn primary small" data-i18n="npmInstall">安装</button>
+        <button id="npmUninstallBtn" class="btn small" data-i18n="remove">卸载</button>
+      </div>
+      <div id="npmList" class="ctx-list"></div>
+      <div id="npmStatus" class="cmd-hint"></div>
+
+      <h3 data-i18n="testMode">测试模式</h3>
+      <label class="switch-row"><input id="testModeToggle" type="checkbox" /><span data-i18n="testModeHint"></span></label>
+
+      <h3 data-i18n="hiveMind">多 AI 蜂巢思维</h3>
+      <label class="switch-row"><input id="hiveMindToggle" type="checkbox" /><span data-i18n="hiveMindDefaultOff"></span></label>
+
+      <h3 data-i18n="aiCode">AI 编程（实验性）</h3>
+      <label class="switch-row"><input id="aiCodeToggle" type="checkbox" /><span data-i18n="aiCodeWarn"></span></label>
+
+      <h3 data-i18n="botChat">bot 之间对话</h3>
+      <label class="switch-row"><input id="botChatToggle" type="checkbox" /><span data-i18n="botChatHint"></span></label>
+
+      <h3 data-i18n="typingTitle">打字机</h3>
+      <label class="switch-row"><input id="typingToggle" type="checkbox" checked /><span data-i18n="typingHint"></span></label>
+
+      <h3 data-i18n="playerLevels">玩家等级划分（信任分面板 / Trust panel）</h3>
+      <label class="switch-row"><input id="playerManualToggle" type="checkbox" /><span data-i18n="playerManualHint"></span></label>
+      <label class="switch-row"><input id="playerAutoToggle" type="checkbox" checked /><span data-i18n="playerAutoHint"></span></label>
+      <div id="playerManualBox" class="player-manual-box hidden">
+        <div class="row"><label data-i18n="lvlOwner"></label><input id="pLvlOwner" class="input" /></div>
+        <div class="row"><label data-i18n="lvlClose"></label><input id="pLvlClose" class="input" /></div>
+        <div class="row"><label data-i18n="lvlFriend"></label><input id="pLvlFriend" class="input" /></div>
+        <div class="row"><label data-i18n="lvlNormal"></label><input id="pLvlNormal" class="input" /></div>
+        <div class="row"><label data-i18n="lvlHostile"></label><input id="pLvlHostile" class="input" /></div>
+        <div class="row"><label data-i18n="lvlTargeted"></label><input id="pLvlTargeted" class="input" /></div>
+      </div>
+
+      <h3 data-i18n="ownerPrivilege">绝对主人特权</h3>
+      <div class="row"><label data-i18n="ownerNames"></label><input id="ownerNames" class="input" placeholder="例如 / e.g. Steve" /></div>
+      <div id="ownerBadges" class="owner-badges"></div>
+      <div class="cmd-hint" data-i18n="ownerHint"></div>
+
+      <h3 data-i18n="sysPromptAppend">系统提示词追加</h3>
+      <textarea id="sysPromptAppend" class="textarea" rows="4" data-i18n-ph="sysPromptPh"></textarea>
+
+      <h3 data-i18n="ctxManager">上下文管理</h3>
+      <div class="ctx-actions">
+        <button id="ctxAddTempBtn" class="btn small" data-i18n="ctxAddTemp">添加临时</button>
+        <button id="ctxAddPermBtn" class="btn small" data-i18n="ctxAddPerm">添加永久</button>
+        <button id="ctxClearTempBtn" class="btn small" data-i18n="ctxClearTemp">清空临时</button>
+        <button id="ctxRefreshBtn" class="btn small" data-i18n="refresh">刷新</button>
+      </div>
+      <textarea id="ctxInput" class="textarea" rows="3" data-i18n-ph="ctxInputPh"></textarea>
+      <div id="ctxList" class="ctx-list"></div>
+
+      <h3 data-i18n="paramTitle">参数查询</h3>
+      <div class="cmd-input-row">
+        <input id="paramSearchInput" class="cmd-input" data-i18n-ph="paramPh" />
+      </div>
+      <div id="paramResult" class="cmd-hint"></div>
+
+      <div class="row buttons">
+        <button id="saveAdvancedBtn" class="btn primary" data-i18n="save">保存</button>
+      </div>
+        </section>
+
+        <section class="settings-pane hidden" data-settings-pane="state">
+      <h3 data-i18n="stateMachineTitle">状态机</h3>
+      <div class="row">
+        <label data-i18n="stateMachineBot">机器人</label>
+        <select id="stateMachineBot" class="cmd-select"></select>
+      </div>
+      <div class="row">
+        <label data-i18n="stateMachinePick">状态机</label>
+        <select id="stateMachineSelect" class="cmd-select"></select>
+      </div>
+      <div class="ctx-actions">
+        <button id="stateMachineRunBtn" class="btn primary small" data-i18n="stateMachineRun">运行</button>
+        <button id="stateMachineStopBtn" class="btn small" data-i18n="stateMachineStop">停止</button>
+        <button id="stateMachineRefreshBtn" class="btn small" data-i18n="refresh">刷新</button>
+      </div>
+      <div id="stateMachineResult" class="cmd-hint"></div>
+
+      <h3 data-i18n="telemetryTitle">实时状态</h3>
+      <div class="row">
+        <label data-i18n="telemetryBot">机器人</label>
+        <select id="telemetryBotSelect" class="cmd-select"></select>
+      </div>
+      <div id="telemetryCards" class="telemetry-cards"></div>
+      <div class="cmd-hint" data-i18n="telemetryEvents">最近事件</div>
+      <div id="telemetryEvents" class="telemetry-events"></div>
+      <div class="ctx-actions">
+        <button id="telemetryToggleBtn" class="btn small" data-i18n="telemetryWatchOn">开始推送</button>
+        <button id="telemetryRefreshBtn" class="btn small" data-i18n="refresh">刷新</button>
+      </div>
+        </section>
+
+        <section class="settings-pane hidden" data-settings-pane="action">
+      <h3 data-i18n="manualTitle">手动驾驶</h3>
+      <label class="switch-row"><input id="manualDriveToggle" type="checkbox" /><span data-i18n="manualDriveHint"></span></label>
+      <div id="drivePad" class="drive-pad">
+        <button class="drive-key" data-drive="forward">W</button>
+        <button class="drive-key" data-drive="left">A</button>
+        <button class="drive-key" data-drive="back">S</button>
+        <button class="drive-key" data-drive="right">D</button>
+        <button class="drive-key" data-drive="jump">Space</button>
+        <button class="drive-key" data-drive="sneak">Shift</button>
+        <button class="drive-key" data-drive="sprint">Ctrl</button>
+        <button class="drive-key" data-drive="attack" data-i18n="driveAttack">攻击</button>
+        <button class="drive-key" data-drive="use" data-i18n="driveUse">使用</button>
+      </div>
+      <div id="driveHint" class="cmd-hint" data-i18n="driveHint"></div>
+
+      <h3 data-i18n="viewerTitle">2D 雷达 / Radar</h3>
+      <canvas id="miniMap" class="mini-map" width="256" height="256"></canvas>
+      <div id="miniMapInfo" class="cmd-hint"></div>
+      <div class="radar-legend cmd-hint" data-i18n="radarLegend">蓝=玩家 / 红=怪物 / 白=掉落物 · 半径 64 格 | Blue=Player / Red=Mob / White=Drop · 64 blocks</div>
+      <div id="viewerBotLabel" class="cmd-hint">目标机器人 / Target bot: —</div>
+      <div id="viewerHint" class="cmd-hint">3D 视角已废弃，请使用 2D 雷达 / 3D view deprecated, use 2D radar</div>
+
+      <section id="precisionPane" class="precision-pane">
+        <h3 data-i18n="precisionTitle">建筑与红石宏配置 / Build &amp; Redstone macros</h3>
+        <div class="precision-intro cmd-hint" data-i18n="precisionIntro">改动即写 state/params.json 与 state/prefs.json，经事件总线广播实时生效 | Changes are saved and broadcast live over the event bus</div>
+        <div class="precision-row">
+          <label for="precisionExactToggle" data-i18n="precisionExact">精确建筑（毫米级放置） / Exact build</label>
+          <input id="precisionExactToggle" class="engine-switch" type="checkbox" aria-label="engExactBuild" />
+          <span id="precisionExactHint" class="cmd-hint">关 / OFF</span>
+        </div>
+        <div class="precision-row">
+          <label for="precisionTickRange" data-i18n="precisionTick">红石触发频率 / Redstone tick</label>
+          <input id="precisionTickRange" class="engine-range" type="range" min="10" max="1000" step="10" value="50" />
+          <input id="precisionTickNumber" class="engine-number" type="number" min="10" max="1000" step="10" value="50" />
+          <span id="precisionTickValue" class="engine-val">50 ms / 毫秒</span>
+        </div>
+        <div id="precisionStatus" class="cmd-hint">精准面板就绪 / precision panel ready</div>
+      </section>
+
+      <h3 data-i18n="actionTitle">高级动作</h3>
+      <div class="row">
+        <select id="actionSelect" class="cmd-select"></select>
+        <button id="actionRunBtn" class="btn primary small" data-i18n="actionRun">执行</button>
+      </div>
+      <div class="row"><input id="actionArgsInput" class="input" data-i18n-ph="actionArgsPh" /></div>
+      <div id="actionHint" class="cmd-hint"></div>
+      <div id="stateMachinePending" class="hidden">
+        <div id="stateMachinePendingText" class="cmd-hint"></div>
+        <div class="ctx-actions">
+          <button id="stateMachineConfirmBtn" class="btn primary small" data-i18n="stateMachineConfirm">确认覆盖</button>
+          <button id="stateMachineCancelBtn" class="btn small" data-i18n="cancel">取消</button>
+        </div>
+      </div>
+        </section>
+
+        <section class="settings-pane hidden" data-settings-pane="engine">
+      <section id="enginePane" class="engine-pane">
+        <h3>底层引擎控制 / Engine Control</h3>
+        <div class="engine-pane-intro cmd-hint">专家模式专属：开关与参数改动立刻写入 state/prefs.json 并实时生效，无需重启 | Expert only: every change saves to state/prefs.json and applies live, no restart</div>
+        <div id="engineControls" class="engine-controls"></div>
+        <div class="engine-actions">
+          <button id="engineResetBtn" class="btn small">恢复默认全开 / Restore all ON</button>
+          <span id="engineStatus" class="cmd-hint">引擎控制就绪 / engine control ready</span>
+        </div>
+      </section>
+      <section id="swarmPane" class="swarm-pane">
+        <div class="swarm-title">蜂群控制台 / Swarm Console</div>
+        <div class="swarm-pane-intro cmd-hint">状态机 3.0：战略层下达目标、反射层受击恢复、黑板竞价与物资循环 | State Machine 3.0: goals, combat resume, bidding &amp; logistics</div>
+        <div id="swarmPanel"></div>
+      </section>
+      <h3 data-i18n="switchCmd">开关指令</h3>
+      <div class="cmd-input-row">
+        <span class="cmd-prefix">&gt;</span>
+        <input id="switchCmdInput" class="cmd-input" data-i18n-ph="switchCmdPh" />
+        <button id="switchCmdSend" class="btn primary small" data-i18n="send">发送</button>
+      </div>
+      <div class="cmd-hint" data-i18n="switchHint"></div>
+
+      <section class="panel log-panel settings-log">
+      <div class="panel-head">
+        <h2 data-i18n="logs">日志</h2>
+        <div class="log-head-actions">
+          <button id="logLangBtn" class="btn tiny">中文日志</button>
+          <button id="clearLogBtn" class="btn tiny" data-i18n="clear">清空</button>
+        </div>
+      </div>
+      <div id="logBox" class="log-box"></div>
+    </section>
+      <hr />
+      <button id="easterEggBtn" class="btn danger full" data-i18n="doNotClick">千万别点</button>
+      <div id="easterEggMsg" class="easter-msg"></div>
+        </section>
+
+        <section class="settings-pane hidden" data-settings-pane="channel">
+          <h3 data-i18n="channelTitle">聊天频道隔离 / Chat Channels</h3>
+          <div class="cmd-hint" data-i18n="channelIntro">公屏指令：set bot-1 channel=team_red；只有同频道 Bot 能互相私聊 | Only bots in the same channel can whisper to each other</div>
+          <div class="row">
+            <label data-i18n="channelBot">机器人 / Bot</label>
+            <select id="channelBotSelect" class="cmd-select"></select>
+          </div>
+          <div class="row">
+            <label data-i18n="channelName">频道名 / Channel</label>
+            <input id="channelNameInput" class="input" placeholder="team_red" />
+          </div>
+          <div class="row">
+            <label data-i18n="channelMax">人数上限 / Max</label>
+            <input id="channelMaxInput" class="input engine-number" type="number" min="1" max="64" value="8" />
+          </div>
+          <div class="ctx-actions">
+            <button id="channelAssignBtn" class="btn primary small" data-i18n="channelAssign">分配频道</button>
+            <button id="channelRefreshBtn" class="btn small" data-i18n="refresh">刷新</button>
+            <button id="channelClearBtn" class="btn small" data-i18n="clear">清空</button>
+          </div>
+          <div class="cmd-input-row">
+            <span class="cmd-prefix">&gt;</span>
+            <input id="channelCmdInput" class="cmd-input" placeholder="set bot-1 channel=team_red" />
+            <button id="channelCmdSend" class="btn primary small" data-i18n="send">发送</button>
+          </div>
+          <div id="channelStatus" class="cmd-hint">频道面板就绪 / channel panel ready</div>
+          <div id="channelList" class="ctx-list"></div>
+        </section>
+
+        <section class="settings-pane hidden" data-settings-pane="model">
+          <h3 data-i18n="modelTitle">模型档案池 / Model Profiles</h3>
+          <div class="cmd-hint" data-i18n="modelIntro">API 接入与 Ollama 解耦：deepseek / ollama / hunyuan 等档案全局单例共享，100 个 Bot 不占多份内存 | Profiles are shared singletons</div>
+          <div class="row">
+            <label data-i18n="modelBot">机器人 / Bot</label>
+            <select id="modelBotSelect" class="cmd-select"></select>
+          </div>
+          <div class="row">
+            <label data-i18n="modelProfile">AI 大脑引擎 / Brain</label>
+            <select id="modelProfileSelect" class="cmd-select engine-select"></select>
+          </div>
+          <div class="ctx-actions">
+            <button id="modelApplyBtn" class="btn primary small" data-i18n="modelApply">应用档案</button>
+            <button id="modelRefreshBtn" class="btn small" data-i18n="refresh">刷新</button>
+          </div>
+          <div id="modelStatus" class="cmd-hint">档案池就绪 / profile pool ready</div>
+          <div id="modelProfileList" class="ctx-list"></div>
+          <hr />
+          <h3>隐私与安全 / Privacy &amp; Safety</h3>
+          <div class="cmd-hint">一键清理并打包 state（脱敏 API Key / 密码 / Token），防止泄露 / Clean &amp; pack state, redacting secrets</div>
+          <div class="ctx-actions">
+            <button id="safetyCleanBtn" class="btn small" data-i18n="safetyClean">清理并打包 state / Clean &amp; pack</button>
+            <button id="safetyMemoryBtn" class="btn small">内存检测（&gt;50 Bot）/ Memory check</button>
+          </div>
+        </section>
+
+        <section class="settings-pane hidden" data-settings-pane="roster">
+          <h3 data-i18n="rosterTitle">Bot 后台仓库 / Bot backend</h3>
+          <div class="cmd-hint" data-i18n="rosterHint">保存后即使本地清空也能恢复；永久删除不可找回。 / Saved profiles survive a local wipe; permanent delete cannot be undone.</div>
+          <div class="ctx-actions">
+            <button id="rosterRestoreAllBtn" class="btn primary small" data-i18n="rosterRestoreAll">恢复全部 / Restore all</button>
+            <button id="rosterRefreshBtn" class="btn small" data-i18n="rosterRefresh">刷新 / Refresh</button>
+          </div>
+          <div id="rosterList" class="roster-list"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="lang.js"></script>
+  <script src="state.js"></script>
+  <script src="api.js"></script>
+  <script src="util.js"></script>
+  <script src="ui.js"></script>
+  <script src="ui-bot.js"></script>
+  <script src="ui-roster.js"></script>
+  <script src="ui-overview.js"></script>
+  <script src="virtual-list.js"></script>
+  <script src="ui-log.js"></script>
+  <script src="ui-context.js"></script>
+  <script src="panel-local.js"></script>
+  <script src="easter.js"></script>
+  <script src="panel-main.js"></script>
+  <script src="panel-ai.js"></script>
+  <script src="panel-settings.js"></script>
+  <script src="panel-engine.js"></script>
+  <script src="panel-precision.js"></script>
+  <script src="panel-swarm.js"></script>
+  <script src="panel-extension.js"></script>
+  <script src="panel-install.js"></script>
+  <script src="panel-state.js"></script>
+  <script src="panel-channel.js"></script>
+  <script src="panel-model.js"></script>
+  <script src="ui-telemetry.js"></script>
+  <script src="ui-actions.js"></script>
+  <script src="ui-map.js"></script>
+  <script src="ui-mode.js"></script>
+  <script src="ui-view.js"></script>
+  <script src="ui-tabs.js"></script>
+  <script src="settings-nav.js"></script>
+  <script src="syntax.js"></script>
+  <script src="events.js"></script>
+  <script src="ui-bind-all.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

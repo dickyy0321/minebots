@@ -1,0 +1,123 @@
+{
+  "name": "minebots",
+  "version": "1.0.0",
+  "description": "LLM-powered Minecraft bot framework: natural language control, AI blueprint building, redstone, multi-bot desktop app",
+  "main": "index.js",
+  "scripts": {
+    "mb": "electron gui/main.js",
+    "start": "electron gui/main.js",
+    "gui": "electron gui/main.js",
+    "selftest": "node scripts/selftest.js",
+    "guard": "node guard.js check",
+    "shot": "node scripts/gui-shot.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win nsis portable",
+    "postinstall": "node scripts/install-ollama.js"
+  },
+  "author": "dickyy0321",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "minecraft-data": "^3.115.0",
+    "mineflayer": "^4.20.0"
+  },
+  "devDependencies": {
+    "electron": "34.5.8",
+    "electron-builder": "^26.18.0"
+  },
+  "optionalDependencies": {
+    "prismarine-auth": "^3.1.1",
+    "prismarine-nbt": "^2.8.0",
+    "@nut-tree-fork/nut-js": "^4.2.6",
+    "archiver": "^7.0.1",
+    "mineflayer-pathfinder": "^2.4.5",
+    "@miner-org/mineflayer-baritone": "*",
+    "@rhld16/mineflayer-antiafk": "*",
+    "@nxg-org/mineflayer-custom-pvp": "*",
+    "@nxg-org/mineflayer-auto-armor": "*",
+    "@nxg-org/mineflayer-auto-buff": "*",
+    "mineflayer-statemachine": "*",
+    "@nxg-org/mineflayer-hive-mind": "*",
+    "mineflayer-schem": "*",
+    "@nxg-org/mineflayer-util-plugin": "*",
+    "@nxg-org/mineflayer-ender": "*",
+    "mineflayer-viaproxy": "*",
+    "mineflayer-mcefly": "*",
+    "@nxg-org/mineflayer-trajectories": "*",
+    "@nxg-org/mineflayer-tracker": "*"
+  },
+  "build": {
+    "appId": "com.minebots.app",
+    "productName": "MineBots",
+    "asar": true,
+    "electronDist": "node_modules/electron/dist",
+    "directories": {
+      "output": "dist"
+    },
+    "extraMetadata": {
+      "main": "gui/main.js"
+    },
+    "files": [
+      "gui/**/*",
+      "modules/**/*",
+      "index.js",
+      "settings.js",
+      "package.json",
+      "!**/*.map",
+      "!**/*.md",
+      "!logs/**",
+      "!state/**",
+      "!dist/**",
+      "!.guard/**"
+    ],
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "MineBots",
+      "artifactName": "MineBots-${version}-setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "MineBots-${version}-portable.${ext}"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dickyy0321/minebots.git"
+  },
+  "homepage": "https://github.com/dickyy0321/minebots#readme",
+  "bugs": {
+    "url": "https://github.com/dickyy0321/minebots/issues"
+  },
+  "keywords": [
+    "minecraft",
+    "mineflayer",
+    "bot",
+    "llm",
+    "ai",
+    "ollama",
+    "electron",
+    "automation"
+  ]
+}

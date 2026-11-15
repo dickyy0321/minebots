@@ -1,0 +1,50 @@
+# 依赖 / dependencies
+node_modules/
+
+# 运行时数据：含 AI Key 与玩家档案，绝不入库
+# runtime data: AI keys and player profiles, never commit
+state/*
+!state/.gitkeep
+keys.json
+
+# 日志与自检报告 / logs and self-test reports
+logs/*
+!logs/.gitkeep
+*.log
+
+# 护栏快照 / guard baseline
+.guard/
+
+# 构建产物与系统垃圾 / build output and OS noise
+dist/
+out/
+build/
+*.zip
+*.exe
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器 / editors
+.vscode/
+.idea/
+
+# 个人配置与密钥 / personal config & secrets (never commit)
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+.npmrc
+.netrc
+*secrets*.json
+*credentials*.json
+config.local.json
+*.local.json
+
+# 临时导出与备份 / scratch exports and backups
+s[0-9].txt
+*.tmp
+*.bak
+*.orig

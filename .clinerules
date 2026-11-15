@@ -1,0 +1,46 @@
+# MineBots · 项目铁律（写代码前必须先默背一遍）
+
+> 你在本项目里写的每一行代码，都必须先满足下面 10 条红线。
+> 不满足 = 直接回滚，不要边写边补。
+
+## 一、语言与模块制（CommonJS only）
+1. 一律 CommonJS：`require` / `module.exports`。
+   - 禁止可选链 `?.`、禁止空值合并 `??`、禁止 `import`、禁止 `export`、禁止顶层 `await`。
+   - 注意：连注释里也不要出现 `?.` / `??`，guard.js 是纯文本正则扫描，注释同样算越界。
+2. 变量名、函数名、文件名绝对不能用中文；中文只能出现在**注释**与**字符串**里。
+3. 每个文件开头必须有文件头注释（`// ====` 分隔块）：文件路径 / 功能 / 依赖 / 导出 / 作者。
+4. 每个函数上方必须有一行中文注释，说明它干什么、失败时返回什么。
+5. 每个外部调用（文件、网络、定时器、第三方库、mineflayer API、JSON 解析）必须包 try/catch，
+   失败只降级并写日志，**绝不允许把异常抛到顶层**；定时器一律 `unref()`，避免拖住进程。
+6. 单文件行数不得超过 600 行（guard.js 的 MAX_LINES 就是 600）。
+7. 禁止修改：`package.json` / `settings.js` / `index.js` / `guard.js` / `README.md` / `LICENSE`
+   （另外 `structure.md` 也在 guard 的禁改清单里）。
+8. 禁止删除/移动/重命名任务未指定的文件；禁止 `require` 不存在的模块（可选依赖必须 try/catch 后降级）。
+9. 界面文字、日志、报错一律中英双语：`"中文 / English"` 这种形式，日志入口优先用 `modules/logger.js`。
+10. 写完必须自查：`node --check` 每个改动文件 → `node scripts/selftest.js` → `node guard.js check` → 报告结果。
+
+## 二、项目既有约定（照抄，不要自创风格）
+- 模块文件放在 `modules/`，渲染进程文件放在 `gui/renderer/`，一次性脚本放 `scripts/`。
+- 老代码是 ES5 风格：`var` + `function` 声明 + 显式 `module.exports = { ... }`；新文件跟随此风格，别混 ES6 类。
+- 可选依赖写法（照 `modules/logger.js` / `modules/bot-manager.js`）：
+  `var mod = null; try { mod = require("./xxx"); } catch (err) { mod = null; }`
+- 日志约定：`logger.info` = 只写文件（不推 GUI）；`logger.system` / `logger.warn` / `logger.server` = 推 GUI。
+  周期性心跳、世界刷新、轮询这类高频信息**只能**走 `logger.info` / `logger.debug`，禁止刷 GUI。
+- 对 mineflayer 的调用要先判空：`if (!bot) return { ok: false, message: "bot not ready / 机器人未就绪" }`。
+- 返回对象统一带 `ok` 字段；出错时带 `message`（双语），方便 GUI 直接展示。
+- `gui/renderer/*.js` 里不要用 `require`，只能通过 `window.api` / `window.botAPI` 走 preload 暴露的接口。
+- 主进程新增 IPC 时必须三件套同时改：`gui/main.js`（onRequest）→ `gui/preload.js`（CHANNEL + API）→ `gui/renderer/api.js`（包装）。
+- 前端状态判定只认白名单：`message === "started"` → running；`"stopped"` 或 `ok === false` 且非 `already running` → stopped；其它一律不动。
+
+## 三、护栏流程（每次改完都要跑）
+```bat
+node guard.js init      :: 只有在大规模删/增文件后、并经用户同意时才重建基线（会覆盖 .guard/backup）
+node guard.js check     :: 检查越界，必须只剩历史遗留项
+node guard.js restore   :: 用户确认后才可回滚
+```
+- 临时验证脚本可以放 `scripts/`（以 `_` 开头），**用完立刻删除**，不要留在仓库里。
+
+## 四、红线之外的产品原则
+- 不做测试模式以外的真实破坏性动作；测试模式（`modules/fake-bot.js`）的模拟节拍不许调快到刷屏。
+- 任何新功能都必须能被 `scripts/selftest.js` 覆盖到，且不能把 selftest 的通过数打下去。
+- 用户说"不要问、直接干"时就不问；但涉及删用户文档、改禁改文件时，必须停下来报告。
