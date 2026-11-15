@@ -213,13 +213,13 @@ A：单次回复装不下上万块坐标，模型负责出方案（尺寸、层�
 
 ## 参与贡献
 
-欢迎 Issue 和 PR。提 PR 之前请先跑：
+**这份代码肯定还有 bug。** 它由一个人在深夜里写出来，2,206 条自检断言是唯一的安全网；断言覆盖不到的地方就是坑。
 
-```bash
-npm run selftest && npm run guard check
-```
+- 遇到问题：开 issue，贴上 `npm run selftest` 的失败输出和环境信息（**记得涂掉 API Key 和服务器地址**）；
+- 想改代码：先跑通 `npm run selftest && npm run guard check` 再提 PR，风格约束写在 [CONTRIBUTING.md](CONTRIBUTING.md)；
+- **半成品 PR 也欢迎**，写一半就开，我们一起补完。
 
-两条都得绿。改动请保持 CommonJS + 文件头注释 + 单文件 600 行以内。
+> Built with love, not VC money. No company, no funding, no roadmap handed down from above — just someone who wanted to talk to Minecraft and have it answer.
 
 ---
 
