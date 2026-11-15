@@ -14,6 +14,10 @@
 
 **下载 / Download** → [`MineBots-1.0.0-setup.exe`](https://github.com/dickyy0321/minebots/releases/latest)（安装版，推荐） · [`MineBots-1.0.0-portable.exe`](https://github.com/dickyy0321/minebots/releases/latest)（便携版，免安装）。未签名，SmartScreen 会拦一下 —— 点「更多信息 → 仍要运行」。
 
+<p align="center">
+  <img src="docs/images/gui.jpg" alt="MineBots 桌面端" width="880">
+</p>
+
 MineBots 不是按键精灵，也不是预设动作的假人。它是一个**完整的机器人运行时**：自然语言进，动作队列出，中间有意图解析、寻路、建造、红石、模组理解，外面还有一个能同时管十只 Bot 的桌面端。
 
 ```
@@ -28,6 +32,7 @@ MineBots 不是按键精灵，也不是预设动作的假人。它是一个**完
 
 ## 目录
 
+- [看效果](#看效果)
 - [30 秒上手](#30-秒上手)
 - [它能做什么](#它能做什么)
 - [架构](#架构)
@@ -38,6 +43,24 @@ MineBots 不是按键精灵，也不是预设动作的假人。它是一个**完
 - [常见问题](#常见问题)
 - [已知限制](#已知限制)
 - [English](#english)
+
+---
+
+## 看效果
+
+不用先装，先看。前四段都是真机录屏（Minecraft 1.21.1 + 本地服务器，不开创造模式、不加速），最后一段是蓝图的三维动画。
+
+| 视频 | 内容 | 时长 |
+|---|---|---|
+| [**发布宣传片**](https://github.com/dickyy0321/minebots/releases/download/v1.0.0/MineBots-promo.mp4) | 纯文字 + 动效，一分半讲清这个框架在干什么 | 1:22 |
+| [**双 Bot 合作盖金茂**](https://github.com/dickyy0321/minebots/releases/download/v1.0.0/MineBots-tower-live.mp4) | 两个机器人奇偶分片施工，26×26×77 格、8714 块，全程实拍 | 1:42 |
+| [**红石门**](https://github.com/dickyy0321/minebots/releases/download/v1.0.0/MineBots-redstone.mp4) | 拉杆 → 铁门开合 → 红石灯亮 | 0:33 |
+| [**生存火柴盒**](https://github.com/dickyy0321/minebots/releases/download/v1.0.0/MineBots-survival-hut.mp4) | 生存模式 4×4 木屋，自己找位置自己封顶 | 0:52 |
+| [**AI 蓝图动画**](https://github.com/dickyy0321/minebots/releases/download/v1.0.0/MineBots-ai-build.mp4) | 模型出的蓝图逐块展开成三维结构 | 1:20 |
+
+<p align="center">
+  <img src="docs/images/tower.jpg" alt="双 Bot 合作建成的塔" width="880">
+</p>
 
 ---
 
